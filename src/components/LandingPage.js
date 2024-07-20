@@ -24,6 +24,35 @@ const LandingPage = () => {
     }
   };
 
+  useEffect(() => {
+    // Implement Google Ads Conversion Tracking
+    const script = document.createElement('script');
+    script.src = 'https://www.googletagmanager.com/gtag/js?id=AW-CONVERSION_ID';
+    script.async = true;
+    document.body.appendChild(script);
+  
+    script.onload = () => {
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'AW-CONVERSION_ID');
+  
+      // Track conversion when user data is fetched successfully
+      if (userData) {
+        gtag('event', 'conversion', {
+          'send_to': 'AW-CONVERSION_ID/CONVERSION_LABEL',
+          'value': 1.0,
+          'currency': 'USD',
+          'transaction_id': ''
+        });
+      }
+    };
+  
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, [userData]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Implement form submission logic here
